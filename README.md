@@ -1,0 +1,1 @@
+Blobfish is a project to teach a bot to play chess using machine learning, and develop an interface for it to do so. This project is part of a research project at UIC.
