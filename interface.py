@@ -34,13 +34,30 @@ class Player:
 class Game:
     """This class represents an arbitrary chess game"""
     def __init__(self, player_white: Player, player_black: Player):
-        self.board = chess.Board()
-        # self.scoreboard = {chess.WHITE: 0, chess.BLACK: 0, None: 0} # None represents draws
-        self.victor = None
-
         self.player_white = player_white
         self.player_black = player_black
 
+        self.board = chess.Board()
+        self.moves = self.board.move_stack # Should not be modified directly; use Board methods
+        self.turn = self.board.turn
+
+        self.in_check = {chess.WHITE: False, chess.BLACK: False}
+        self.can_castle = {chess.WHITE: True, chess.BLACK: True}
+        self.victor = None
+
+    def choose_move(self,move: chess.Move):
+        if move in self.board.legal_moves:
+            if self.board.gives_check(move):
+                self.in_check[not self.turn] = True
+            self.board.push(move)
+        else:
+            raise chess.IllegalMoveError
+
+        self.can_castle[self.turn] = self.board.has_castling_rights(self.turn)
+        self.turn = self.board.turn # Run this AFTER any attribute updates
+
+        if self.board.is_checkmate():
+            self.game_over()
 
     def game_over(self):
         self.victor = self.board.outcome().winner
@@ -54,17 +71,13 @@ class Game:
             self.player_white.draws += 1
             self.player_black.draws += 1
 
+class Scoreboard:
+    """This class represents a history of played games"""
+    def __init__(self):
+        self.scoreboard = {chess.WHITE: 0, chess.BLACK: 0, None: 0}
+        self.record = [] # A list of past Games, which can be reviewed later
 
-# Preserved for potential future development paths
-# class Board:
-#     """This class represents a chessboard. """
-#     def __init__(self):
-#         self.board = [] # The current state of the board, represented by a nested list
-#         self.moves = [] # A list of all moves in the game
-#
-#     def move_piece(self, move, player):
-#         """
-#         This function updates the Board object with the desired move. move should be a string in chess notation,
-#         and player should be either 0 for white, or 1 for black.
-#         """
-#
+    def update(self, game: Game):
+        """Increments the scoreboard and updates the record. Assumes game has been concluded"""
+        self.scoreboard[game.victor] += 1
+        self.record.append(game)
