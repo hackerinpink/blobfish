@@ -45,6 +45,27 @@ class Game:
         self.can_castle = {chess.WHITE: True, chess.BLACK: True}
         self.victor = None
 
+
+    def __repr__(self):
+        return self.board.fen()
+
+    def __str__(self):
+        board_list = [[],[],[],[],[],[],[],[]]
+        board_string = ""
+
+        # Initialize the list
+        for rank in range(0, 7):
+            for file in range(0, 7):
+                board_list[rank].append(None)
+
+        for rank in range(0,7):
+            for file in range(0,7):
+                if self.board.piece_at(chess.square(file,rank)) is not None:
+                    board_list[rank][file] = self.board.piece_at(chess.square(file,rank)).symbol()
+        for rank in board_list:
+            board_string = str(board_list) + "\n"
+        return board_string
+
     def choose_move(self,move: chess.Move):
         if move in self.board.legal_moves:
             if self.board.gives_check(move):
@@ -70,6 +91,14 @@ class Game:
         else:
             self.player_white.draws += 1
             self.player_black.draws += 1
+
+    def automate(self, turns=0):
+        """Yield control of the board to the robots, for an optional number of turns (defaults until game over)"""
+        turn = 1
+        while (not self.board.is_game_over()):
+            pass
+        pass
+
 
 class Scoreboard:
     """This class represents a history of played games"""
