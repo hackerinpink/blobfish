@@ -12,7 +12,10 @@ class Game:
         self.turn = self.board.turn
 
         self.in_check = {chess.WHITE: False, chess.BLACK: False}
-        self.can_castle = {chess.WHITE: True, chess.BLACK: True}
+        self.can_castle = {
+            chess.WHITE: {"kingside": True, "queenside": True}, 
+            chess.BLACK: {"kingside": True, "queenside": True}
+            }
         self.victor = None
 
     def __repr__(self):
@@ -35,7 +38,7 @@ class Game:
             
         try:
             if self.board.gives_check(move):
-                self.in_check[not self.turn] = True #  Declares the opposing Player to be in check
+                self.in_check[not self.turn] = True
             self.board.push(move)
         except chess.IllegalMoveError:
             print("Error: Not a legal move.")
@@ -71,6 +74,7 @@ class Scoreboard:
 
     def update(self, game: Game):
         """Increments the scoreboard and updates the record.
-           Assumes Game has been concluded."""
+        Assumes Game has been concluded.
+        """
         self.scoreboard[game.victor] += 1
         self.record.append(game)
