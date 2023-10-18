@@ -1,6 +1,7 @@
 class Player:
   def __init__(self, color, board):
       self.color = color
+      self.score = {"Wins": 0, "Losses": 0, "Draws": 0}
       self.check = False
       self.en_passant = False
       self.check = False
