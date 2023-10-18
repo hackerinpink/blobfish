@@ -1,5 +1,5 @@
 import chess
-
+from player import Player
 
 class Game:
     """This class represents an arbitrary chess game"""
