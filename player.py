@@ -1,5 +1,7 @@
+import chess
 class Player:
-  def __init__(self, color, board):
+  def __init__(self, color: chess.Color):
+      
       self.color = color
       self.score = {"Wins": 0, "Losses": 0, "Draws": 0}
       self.check = False
@@ -34,8 +36,9 @@ class Player:
       self.castling = game.can_castle[self.color]
       self.check = game.in_check[self.color]
       move_sequence = []
+      self.en_passant = game.has_en_passant[self.color]
       for i in range(len(game.moves)):
-          # Update move_sequence based on every other move in move_stack
+          # Update move_sequence based on every other move in move_stack.
           # Since int(chess.WHITE) = int(True) = 1, this will pick even-
           # numbered moves for white, and odd for black
           move_sequence.append((game.moves[2*i + (not int(self.color))]))

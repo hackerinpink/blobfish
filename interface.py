@@ -11,6 +11,7 @@ class Game:
         self.moves = self.board.move_stack # Should not be modified directly; use Board methods
         self.turn = self.board.turn
 
+        self.has_en_passant = {chess.WHITE: False, chess.BLACK: False} 
         self.in_check = {chess.WHITE: False, chess.BLACK: False}
         self.can_castle = {
             chess.WHITE: {"kingside": True, "queenside": True}, 
@@ -44,6 +45,7 @@ class Game:
             print("Error: Not a legal move.")
             return False
         
+        self.has_en_passant[self.turn] = self.board.has_legal_en_passant
         self.can_castle[self.turn] = self.board.has_castling_rights(self.turn)
         self.turn = self.board.turn #  Run this AFTER any attribute updates
 
