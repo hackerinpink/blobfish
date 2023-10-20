@@ -1,6 +1,8 @@
 import chess
 
 
+
+
 class Player:
   """An arbitrary player capable of choosing a move and storing state"""
   def __init__(self, color: chess.Color):
