@@ -12,7 +12,8 @@ class Player:
   def MakeMove(self, board):
       legal_moves = list(board.legal_moves)
       import random
-      player_move = random.choice(legal_moves)
+      if len(legal_moves) > 0:
+        player_move = random.choice(legal_moves)
       current_castling = self.castling.copy()
       self.update_castling_rights(current_castling)
       if board.is_check():

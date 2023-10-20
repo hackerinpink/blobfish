@@ -68,6 +68,29 @@ class Game:
             self.player_white.score["Draws"] += 1
             self.player_black.score["Draws"] += 1
 
+    def play(self):
+        """Begin and run the game. Currently only supports TUI."""
+        print("Welcome to Blobfish chess!")
+        print("UCI Format: {start square}{end square}{promotion if app.}")
+        print("e.g.: e2e4, e7e8q")
+        turn = 1
+        while not self.board.is_game_over():
+            print("Turn", turn)
+            print("Board:")
+            print(self)
+            print("White's move")
+            self.choose_move(self.player_white.MakeMove(self.board))
+            if not self.board.is_game_over(): #  For when White checkmates
+                print("Black's move")
+                self.choose_move(self.player_black.MakeMove(self.board))
+            turn += 1
+        if self.victor == True:
+           print("Game over! White wins!") 
+        elif self.victor == False: 
+            print("Game over! Black wins!")
+        else:
+            print("Game over! Draw!")
+
 class Scoreboard:
     """This class represents a history of played games"""
     def __init__(self):
