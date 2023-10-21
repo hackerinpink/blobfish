@@ -1,7 +1,10 @@
 import chess
+from game import Game
+
+
 class Player:
+  """An arbitrary player capable of choosing a move and storing state"""
   def __init__(self, color: chess.Color):
-      
       self.color = color
       self.score = {"Wins": 0, "Losses": 0, "Draws": 0}
       self.check = False
@@ -9,26 +12,16 @@ class Player:
       self.castling = {'kingside': True, 'queenside': True}
       self.move_sequence = []
 
-  def MakeMove(self, board):
-      legal_moves = list(board.legal_moves)
-      import random
-      if len(legal_moves) > 0:
-        player_move = random.choice(legal_moves)
-      current_castling = self.castling.copy()
-      self.update_castling_rights(current_castling)
-      if board.is_check():
-          self.check = True
-      else:
-          self.check = False
-      self.move_sequence.append(str(player_move))
-      return str(player_move)
+  def MakeMove(self, board: chess.Board):
+      # TODO: Update with NN functionality
+      pass
 
   def update_castling_rights(self, previous_castling):
       for square in previous_castling:
           if previous_castling[square]:
               self.castling[square] = False
 
-  def read_board(self, game):
+  def read_board(self, game: Game):
       """Reads the state of the Game.board, and updates Player attributes.
       Note: This overwrites all existing Player attributes with the Game
       version. This function should be called if these have somehow been
@@ -44,3 +37,28 @@ class Player:
           # numbered moves for white, and odd for black
           move_sequence.append((game.moves[2*i + (not int(self.color))]))
       self.move_sequence = move_sequence
+
+class RandomPlayer(Player):
+    """A Player that moves entirely randomly."""
+    def MakeMove(self, board: chess.Board):
+      legal_moves = list(board.legal_moves)
+      import random
+      if len(legal_moves) > 0:
+        player_move = random.choice(legal_moves)
+      current_castling = self.castling.copy()
+      self.update_castling_rights(current_castling)
+      if board.is_check():
+          self.check = True
+      else:
+          self.check = False
+      self.move_sequence.append(str(player_move))
+      return str(player_move)
+    
+class HumanPlayer(Player):
+    """A Player whose actions are chosen by a human."""
+    def MakeMove(self, board: chess.Board):
+        move = input("Please type a move in UCI format: ")
+        while chess.Move.from_uci(move) not in list(board.legal_moves):
+            print("Move is not legal!")
+            move = input("Please type a move in UCI format: ")
+        return move
