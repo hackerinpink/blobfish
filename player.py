@@ -1,5 +1,4 @@
 import chess
-from game import Game
 
 
 class Player:
@@ -21,7 +20,7 @@ class Player:
           if previous_castling[square]:
               self.castling[square] = False
 
-  def read_board(self, game: Game):
+  def read_board(self, game):
       """Reads the state of the Game.board, and updates Player attributes.
       Note: This overwrites all existing Player attributes with the Game
       version. This function should be called if these have somehow been
