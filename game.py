@@ -112,6 +112,15 @@ class Game:
         with open(filename, "w") as file:
             file.write(str(match))
 
+    def import_game(self,filename):
+        """Import a game from a .pgn file and update the Game to match.
+        NOTE: This should primarily be used for resuming in-progress
+        games, as it overwrites the entire Game's state with that 
+        of another. 
+        """
+        file = open(filename, "r", "utf-8")
+        match = chess.pgn.read_game(file)
+
 class Scoreboard:
     """This class represents a history of played games"""
     def __init__(self):
