@@ -3,7 +3,10 @@ import chess
 
 class Player:
   """An arbitrary player capable of choosing a move and storing state"""
-  def __init__(self, color: chess.Color):
+  def __init__(self, color: chess.Color, name: str):
+      # Name should be in LastName, FirstName format
+      self.name = name
+      
       self.color = color
       self.score = {"Wins": 0, "Losses": 0, "Draws": 0}
       self.check = False
