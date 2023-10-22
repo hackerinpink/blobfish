@@ -1,5 +1,8 @@
 import chess
+import chess.pgn
+import datetime
 from player import Player
+
 
 class Game:
     """This class represents an arbitrary chess game"""
@@ -8,9 +11,10 @@ class Game:
         self.player_black = player_black
 
         self.board = chess.Board()
-        self.moves = self.board.move_stack # Should not be modified directly; use Board methods
+        self.moves = self.board.move_stack #  Only edit with board methods
         self.turn = self.board.turn
 
+        self.has_en_passant = {chess.WHITE: False, chess.BLACK: False} 
         self.in_check = {chess.WHITE: False, chess.BLACK: False}
         self.can_castle = {
             chess.WHITE: {"kingside": True, "queenside": True}, 
@@ -44,6 +48,7 @@ class Game:
             print("Error: Not a legal move.")
             return False
         
+        self.has_en_passant[self.turn] = self.board.has_legal_en_passant
         self.can_castle[self.turn] = self.board.has_castling_rights(self.turn)
         self.turn = self.board.turn #  Run this AFTER any attribute updates
 
@@ -65,6 +70,47 @@ class Game:
         else:
             self.player_white.score["Draws"] += 1
             self.player_black.score["Draws"] += 1
+
+    def play(self):
+        """Begin and run the game. Currently only supports TUI."""
+        print("Welcome to Blobfish chess!")
+        print("UCI Format: {start square}{end square}{promotion if app.}")
+        print("e.g.: e2e4, e7e8q")
+        turn = 1
+        while not self.board.is_game_over():
+            print("Turn", turn)
+            print("Board:")
+            print(self)
+            print("White's move")
+            self.choose_move(self.player_white.MakeMove(self.board))
+            if not self.board.is_game_over(): #  For when White checkmates
+                print("Black's move")
+                self.choose_move(self.player_black.MakeMove(self.board))
+            turn += 1
+        if self.victor == True:
+           print("Game over! White wins!") 
+        elif self.victor == False: 
+            print("Game over! Black wins!")
+        else:
+            print("Game over! Draw!")
+    
+    def export_game(self, filename=None):
+        """Export the Game to a .pgn file"""
+        time_now = datetime.datetime.now().strftime('%Y-%m-%d-%H%M%S')
+        date_now = datetime.date.isoformat(datetime.date.today())
+        if filename is None:
+            filename = "blobfish-" + time_now + ".pgn"
+        match = chess.pgn.Game.from_board(self.board)
+        
+        match.headers["Event"] = "Blobfish Match " + time_now
+        match.headers["Site"] = "Blobfish Engine"
+        match.headers["Date"] = date_now
+        match.headers["Round"] = 1 #  TODO
+        match.headers["White"] = self.player_white.name
+        match.headers["Black"] = self.player_black.name
+
+        with open(filename, "w") as file:
+            file.write(str(match))
 
 class Scoreboard:
     """This class represents a history of played games"""
