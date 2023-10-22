@@ -1,5 +1,8 @@
 import chess
+import chess.pgn
+import datetime
 from player import Player
+
 
 class Game:
     """This class represents an arbitrary chess game"""
@@ -8,7 +11,7 @@ class Game:
         self.player_black = player_black
 
         self.board = chess.Board()
-        self.moves = self.board.move_stack # Should not be modified directly; use Board methods
+        self.moves = self.board.move_stack #  Only edit with board methods
         self.turn = self.board.turn
 
         self.has_en_passant = {chess.WHITE: False, chess.BLACK: False} 
@@ -90,6 +93,24 @@ class Game:
             print("Game over! Black wins!")
         else:
             print("Game over! Draw!")
+    
+    def export_game(self, filename=None):
+        """Export the Game to a .pgn file"""
+        time_now = datetime.datetime.now().strftime('%Y-%m-%d-%H%M%S')
+        date_now = datetime.date.isoformat(datetime.date.today())
+        if filename is None:
+            filename = "blobfish-" + time_now + ".pgn"
+        match = chess.pgn.Game.from_board(self.board)
+        
+        match.headers["Event"] = "Blobfish Match " + time_now
+        match.headers["Site"] = "Blobfish Engine"
+        match.headers["Date"] = date_now
+        match.headers["Round"] = 1 #  TODO
+        match.headers["White"] = self.player_white.name
+        match.headers["Black"] = self.player_black.name
+
+        with open(filename, "w") as file:
+            file.write(str(match))
 
 class Scoreboard:
     """This class represents a history of played games"""
