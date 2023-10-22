@@ -94,7 +94,7 @@ class Game:
         else:
             print("Game over! Draw!")
     
-    def export(self, filename=None):
+    def export_game(self, filename=None):
         """Export the Game to a .pgn file"""
         time_now = datetime.datetime.now().strftime('%Y-%m-%d-%H%M%S')
         date_now = datetime.date.isoformat(datetime.date.today())
