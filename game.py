@@ -20,6 +20,9 @@ class Game:
             chess.WHITE: {"kingside": True, "queenside": True}, 
             chess.BLACK: {"kingside": True, "queenside": True}
             }
+        
+        self.date = datetime.date.isoformat(datetime.date.today())
+        self.endtime = None
         self.victor = None
 
     def __repr__(self):
@@ -60,7 +63,9 @@ class Game:
         """Declares a victor for the Game and updates the Players' scores.
         Assumes Game has been concluded.
         """
+        self.endtime = datetime.datetime.now().strftime('%Y-%m-%d-%H%M%S')
         self.victor = self.board.outcome().winner
+
         if self.victor == chess.WHITE:
             self.player_white.score["Wins"] += 1
             self.player_black.score["Losses"] += 1
@@ -96,15 +101,18 @@ class Game:
     
     def export_game(self, filename=None):
         """Export the Game to a .pgn file"""
-        time_now = datetime.datetime.now().strftime('%Y-%m-%d-%H%M%S')
-        date_now = datetime.date.isoformat(datetime.date.today())
+        if self.endtime is None:
+            game_time = datetime.datetime.now().strftime('%Y-%m-%d-%H%M%S')
+        else:
+            game_time = self.endtime
         if filename is None:
-            filename = "blobfish-" + time_now + ".pgn"
+            filename = "blobfish-" + game_time + ".pgn"
+        
         match = chess.pgn.Game.from_board(self.board)
         
-        match.headers["Event"] = "Blobfish Match " + time_now
+        match.headers["Event"] = "Blobfish Match " + game_time
         match.headers["Site"] = "Blobfish Engine"
-        match.headers["Date"] = date_now
+        match.headers["Date"] = self.date
         match.headers["Round"] = 1 #  TODO
         match.headers["White"] = self.player_white.name
         match.headers["Black"] = self.player_black.name
