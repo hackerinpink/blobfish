@@ -56,8 +56,6 @@ class Game:
         self.can_castle[self.turn] = self.board.has_castling_rights(self.turn)
         self.turn = self.board.turn #  Run this AFTER any attribute updates
 
-        if self.board.is_checkmate():
-            self.game_over()
         return True
 
     def game_over(self):
@@ -93,6 +91,9 @@ class Game:
                 print("Black's move")
                 self.choose_move(self.player_black.MakeMove(self.board))
             turn += 1
+        if self.board.is_game_over():
+            self.game_over()
+
         if self.victor == True:
            print("Game over! White wins!") 
         elif self.victor == False: 
