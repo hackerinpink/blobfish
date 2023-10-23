@@ -1,8 +1,9 @@
 import chess
 import chess.pgn
-import datetime
 from player import Player
 
+import datetime
+import os
 
 class Game:
     """This class represents an arbitrary chess game"""
@@ -100,7 +101,11 @@ class Game:
             print("Game over! Draw!")
     
     def export_game(self, filename=None):
-        """Export the Game to a .pgn file"""
+        """Export the Game to a .pgn file. 
+        NOTE: Currently, Games are defined separately from each other; that is,
+        the Round header is not used, even if two Games are meant to continue
+        each other
+        """
         if self.endtime is None: #  If the Game is over or not
             game_time = datetime.datetime.now().strftime('%Y-%m-%d-%H%M%S')
         else:
@@ -153,8 +158,19 @@ class Scoreboard:
         self.scoreboard[game.victor] += 1
         self.record.append(game)
 
-    def export(self, filename=None):
-        """Exports the Scoreboard to a .zip file, containing a .pgn file for
-        every game in the record. Optionally takes a filename argument 
-        for the .zip file. 
+    def export(self):
+        """Exports the Scoreboard to a folder in the current working directory,
+        containing a .pgn file for every game in the record.
         """
+        time_now = datetime.datetime.now().strftime('%Y-%m-%d-%H%M%S')
+        dir_name = "blobfish-record-" + time_now
+        os.mkdir(dir_name)
+
+        for game in self.record:
+            filename = "blobfish-" + game.endtime +".pgn"
+            filename = os.path.join(dir_name, filename)
+            game.export_game(filename)
+        
+        # Write the actual "scoreboard" to a file
+        with open(dir_name + "/record.txt", "w") as f:
+            f.write(str(self.record))
