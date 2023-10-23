@@ -101,7 +101,8 @@ class Game:
             print("Game over! Draw!")
     
     def export_game(self, filename=None):
-        """Export the Game to a .pgn file. 
+        """Export the Game to a .pgn file. Optionally takes a filename to 
+        use. If provided, filename should end in .pgn
         NOTE: Currently, Games are defined separately from each other; that is,
         the Round header is not used, even if two Games are meant to continue
         each other
