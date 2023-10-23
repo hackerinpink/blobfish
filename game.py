@@ -101,7 +101,7 @@ class Game:
     
     def export_game(self, filename=None):
         """Export the Game to a .pgn file"""
-        if self.endtime is None:
+        if self.endtime is None: #  If the Game is over or not
             game_time = datetime.datetime.now().strftime('%Y-%m-%d-%H%M%S')
         else:
             game_time = self.endtime
@@ -116,7 +116,18 @@ class Game:
         match.headers["Round"] = 1 #  TODO
         match.headers["White"] = self.player_white.name
         match.headers["Black"] = self.player_black.name
-
+        
+        if self.victor == chess.WHITE:
+            match.headers["Result"] = "1-0"
+        elif self.victor == chess.BLACK:
+            match.headers["Result"] = "0-1"
+        else:
+            # Handle None victor cases (draw vs in-progress) separately
+            if self.board.is_game_over():
+                match.headers["Result"] = "1/2-1/2"
+            else:
+                match.headers["Result"] = "*"
+        
         with open(filename, "w") as file:
             file.write(str(match))
 
@@ -141,3 +152,9 @@ class Scoreboard:
         """
         self.scoreboard[game.victor] += 1
         self.record.append(game)
+
+    def export(self, filename=None):
+        """Exports the Scoreboard to a .zip file, containing a .pgn file for
+        every game in the record. Optionally takes a filename argument 
+        for the .zip file. 
+        """
