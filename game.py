@@ -175,4 +175,4 @@ class Scoreboard:
         
         # Write the actual "scoreboard" to a file
         with open(dir_name + "/record.txt", "w") as f:
-            f.write(str(self.record))
+            f.write(str(self.scoreboard))
