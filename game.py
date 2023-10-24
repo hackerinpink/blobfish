@@ -112,9 +112,6 @@ class Game:
             game_time = datetime.datetime.now().strftime('%Y-%m-%d-%H%M%S')
         else:
             game_time = self.endtime
-        if filename is None:
-            filename = "blobfish-" + game_time + ".pgn"
-        
         match = chess.pgn.Game.from_board(self.board)
         
         match.headers["Event"] = "Blobfish Match " + game_time
@@ -141,6 +138,13 @@ class Game:
         use. If provided, filename should end in ".pgn".
         """
         match = self.game_to_pgn()
+        if self.endtime is None:  # If the Game is over or not
+            game_time = datetime.datetime.now().strftime('%Y-%m-%d-%H%M%S')
+        else:
+            game_time = self.endtime
+        if filename is None:
+            filename = "blobfish-" + game_time + ".pgn"
+        
         with open(filename, "w") as file:
             file.write(str(match))
 
@@ -164,7 +168,8 @@ class Scoreboard:
         Assumes Game has been concluded.
         """
         self.scoreboard[game.victor] += 1
-        self.record.append(game)
+        pgn_game = game.game_to_pgn()
+        self.record.append(pgn_game)
 
     def export_scoreboard(self):
         """Exports the Scoreboard to a folder in the current working directory,
@@ -175,9 +180,10 @@ class Scoreboard:
         os.mkdir(dir_name)
 
         for game in self.record:
-            filename = "blobfish-" + game.endtime +".pgn"
+            filename = str(game.headers["Event"]) +".pgn"
             filename = os.path.join(dir_name, filename)
-            game.export_game(filename)
+            with open(filename, "a") as file:
+                file.write(str(game))
         
         # Write the actual "scoreboard" to a file
         with open(dir_name + "/record.txt", "w") as f:
