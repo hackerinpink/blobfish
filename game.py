@@ -54,7 +54,7 @@ class Game:
         
         self.has_en_passant[self.turn] = self.board.has_legal_en_passant
         self.can_castle[self.turn] = self.board.has_castling_rights(self.turn)
-        self.turn = self.board.turn #  Run this AFTER any attribute updates
+        self.turn = self.board.turn  # Run this AFTER any attribute updates
 
         return True
 
@@ -101,14 +101,14 @@ class Game:
         else:
             print("Game over! Draw!")
     
-    def export_game(self, filename=None):
-        """Export the Game to a .pgn file. Optionally takes a filename to 
-        use. If provided, filename should end in .pgn
+    def game_to_pgn(self):
+        """Returns a chess.pgn.Game object with headers which can be exported
+        or added to a Scoreboard.
         NOTE: Currently, Games are defined separately from each other; that is,
         the Round header is not used, even if two Games are meant to continue
-        each other
+        each other.
         """
-        if self.endtime is None: #  If the Game is over or not
+        if self.endtime is None:  # If the Game is over or not
             game_time = datetime.datetime.now().strftime('%Y-%m-%d-%H%M%S')
         else:
             game_time = self.endtime
@@ -120,7 +120,7 @@ class Game:
         match.headers["Event"] = "Blobfish Match " + game_time
         match.headers["Site"] = "Blobfish Engine"
         match.headers["Date"] = self.date
-        match.headers["Round"] = 1 #  TODO
+        match.headers["Round"] = 1  # TODO
         match.headers["White"] = self.player_white.name
         match.headers["Black"] = self.player_black.name
         
@@ -134,7 +134,13 @@ class Game:
                 match.headers["Result"] = "1/2-1/2"
             else:
                 match.headers["Result"] = "*"
+        return match
         
+    def export_game(self, filename=None):
+        """Export the Game to a .pgn file. Optionally takes a filename to 
+        use. If provided, filename should end in ".pgn".
+        """
+        match = self.game_to_pgn()
         with open(filename, "w") as file:
             file.write(str(match))
 
@@ -151,7 +157,7 @@ class Scoreboard:
     """This class represents a history of played games"""
     def __init__(self):
         self.scoreboard = {chess.WHITE: 0, chess.BLACK: 0, None: 0}
-        self.record = [] # A list of past Games, which can be reviewed later
+        self.record = []  # A list of past Games, which can be reviewed later
 
     def update(self, game: Game):
         """Increments the scoreboard and updates the record.
@@ -188,7 +194,7 @@ class Scoreboard:
         
         if not os.path.isdir(dir):
             raise FileNotFoundError
-        # Get a list of ONLY files in dir
+        # Get a list of only .pgn files in dir
         files = []
         for f in os.listdir(dir):
             if os.path.isfile(f) and os.path.splitext(f)[1] == ".pgn":
