@@ -176,3 +176,23 @@ class Scoreboard:
         # Write the actual "scoreboard" to a file
         with open(dir_name + "/record.txt", "w") as f:
             f.write(str(self.scoreboard))
+
+    def import_scoreboard(self, dir, overwrite=False):
+        """Reads a given directory for .pgn files and adds them to the
+        Scoreboard. If the overwrite flag is passed, the existing data is 
+        overwritten. 
+        """
+        if overwrite:
+            self.scoreboard = {chess.WHITE: 0, chess.BLACK: 0, None: 0}
+            self.record = []
+        
+        if not os.path.isdir(dir):
+            raise FileNotFoundError
+        # Get a list of ONLY files in dir
+        files = []
+        for f in os.listdir(dir):
+            if os.path.isfile(f) and os.path.splitext(f)[1] == ".pgn":
+                files.append(f)
+        for f in files:
+            file = open(os.path.join(dir,f), "r")
+            match = chess.pgn.read_game(file)
