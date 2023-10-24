@@ -160,7 +160,7 @@ class Scoreboard:
         self.scoreboard[game.victor] += 1
         self.record.append(game)
 
-    def export(self):
+    def export_scoreboard(self):
         """Exports the Scoreboard to a folder in the current working directory,
         containing a .pgn file for every game in the record.
         """
