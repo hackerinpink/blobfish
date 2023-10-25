@@ -1,13 +1,14 @@
 import chess
 import chess.pgn
-from player import Player
 
 import datetime
 import os
 
 class Game:
-    """This class represents an arbitrary chess game"""
-    def __init__(self, player_white: Player, player_black: Player):
+    """This class represents an arbitrary chess game. Takes two Player objects,
+    representing the White and Black players.
+    """
+    def __init__(self, player_white, player_black):
         self.player_white = player_white
         self.player_black = player_black
 
