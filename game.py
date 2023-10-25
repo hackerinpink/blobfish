@@ -199,3 +199,4 @@ class Scoreboard:
         for f in files:
             file = open(os.path.join(dir,f), "r")
             match = chess.pgn.read_game(file)
+            file.close()
