@@ -182,8 +182,8 @@ class Scoreboard:
 
     def import_scoreboard(self, dir, overwrite=False):
         """Reads a given directory for .pgn files and adds them to the
-        Scoreboard. If the overwrite flag is passed, the existing data is 
-        overwritten. 
+        Scoreboard. Assumes that pgn files are valid. If the overwrite flag is 
+        passed, the existing data is overwritten. 
         """
         if overwrite:
             self.scoreboard = {chess.WHITE: 0, chess.BLACK: 0, None: 0}
@@ -191,12 +191,27 @@ class Scoreboard:
         
         if not os.path.isdir(dir):
             raise FileNotFoundError
-        # Get a list of only .pgn files in dir
+        
         files = []
+        # Get a list of only .pgn files in dir, prepended with dir path
         for f in os.listdir(dir):
+            f = os.path.join(dir,f)
             if os.path.isfile(f) and os.path.splitext(f)[1] == ".pgn":
                 files.append(f)
+        
         for f in files:
-            file = open(os.path.join(dir,f), "r")
+            file = open(f, "r")
             match = chess.pgn.read_game(file)
+            
+            # NOTE: Currently, Score checks assume matches are distinct; i.e., 
+            # that each Result will have a score of at most 1. 
+            if match.headers["Result"] == "1-0":
+                self.scoreboard[chess.WHITE] += 1
+            elif match.headers["Result"] == "0-1":
+                self.scoreboard[chess.BLACK] += 1
+            elif match.headers["Result"] == "1/2-1/2":
+                self.scoreboard[None] += 1
+
+            self.record.append(match)
+           
             file.close()
