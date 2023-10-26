@@ -49,3 +49,5 @@ while ready:
             print("Thanks for playing!")
             print("Score:")
             print(scoreboard.scoreboard)
+            if (input("Save record? [y/n] ") == "y"):
+                scoreboard.export_scoreboard()
