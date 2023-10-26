@@ -2,7 +2,10 @@ import chess
 
 
 class Player:
-  """An arbitrary player capable of choosing a move and storing state"""
+  """An arbitrary player capable of choosing a move and storing state. 
+  This class should not be invoked directly, but rather used as a superclass for
+  various player types.
+  """
   def __init__(self, color: chess.Color, name: str):
       # Name should be in LastName, FirstName format
       self.name = name
@@ -15,7 +18,9 @@ class Player:
       self.move_sequence = []
 
   def MakeMove(self, board: chess.Board):
-      # TODO: Update with NN functionality
+      """A template function for selecting a move. Subclasses should overload
+      this with logic for their specific cases.
+      """
       pass
 
   def update_castling_rights(self, previous_castling):
