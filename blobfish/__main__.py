@@ -1,4 +1,5 @@
 import chess
+import pygame
 from . import (
     player,
     game
