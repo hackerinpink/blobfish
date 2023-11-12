@@ -101,7 +101,12 @@ class Game:
             print("Game over! Black wins!")
         else:
             print("Game over! Draw!")
-    
+    def step(self):
+        if not self.board.is_game_over():
+            if self.board.turn == chess.WHITE:
+                self.choose_move(self.player_white.MakeMove(self.board))
+            else:
+                self.choose_move(self.player_black.MakeMove(self.board))
     def game_to_pgn(self):
         """Returns a chess.pgn.Game object with headers which can be exported
         or added to a Scoreboard.

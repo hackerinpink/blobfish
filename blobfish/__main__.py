@@ -1,9 +1,8 @@
 import chess
 import pygame
-from . import (
-    player,
-    game
-)
+import player
+import game
+
 
 scoreboard = game.Scoreboard()
 
