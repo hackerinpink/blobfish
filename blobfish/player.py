@@ -64,3 +64,4 @@ class HumanPlayer(Player):
             print("Move is not legal!")
             move = input("Please type a move in UCI format: ")
         return move
+    

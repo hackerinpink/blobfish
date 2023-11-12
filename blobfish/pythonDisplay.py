@@ -1,6 +1,7 @@
 import pygame #Importing pygame
 import chess
 import game,player
+import math
 pygame.init() #Using pygame
 
 board = chess.Board()
@@ -16,6 +17,8 @@ DISPLAY_SCREEN = pygame.display.set_mode(WINDOW_SIZE) #Creates a pop up window t
 the_game = game.Game(player.RandomPlayer(chess.WHITE,'WHITE'),player.RandomPlayer(chess.BLACK,"BLACK"))
 
 pygame.display.set_caption("Chess Game Board") #The title of the DISPLAY_SCREEN
+
+
 
 PIECES = {
     "K":"♔",
@@ -61,14 +64,28 @@ game = True #Setting a boolean variable game as true
 
 setUp_board() #Setting up the game board
 update_pieces(board)
+starting_square = ""
+player_move = ""
+class HumanGUIPlayer(Player):
+    """A Human Player that inputs via the GUI"""
+    def MakeMove(self, board: chess.Board):
+        return super().MakeMove(board)
 while game: #While we are playing the game, we are getting the user input until the user input's quit. Then we set game = false and exit out of the while loop
 
     for event in pygame.event.get():
-
         if event.type == pygame.QUIT:
-
             game = False
-    
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            squareX = math.floor(event.pos[0]/81.25)
+            squareY = 7-math.floor(event.pos[1]/81.25)
+            col_to_letter = 'abcdefgh'[squareX]
+            square = col_to_letter+str(squareY+1)
+            if starting_square == "":
+                starting_square = square
+            else:
+                print(starting_square+square)
+                starting_square = ''
+            
     the_game.step()
     update_pieces(the_game.board)
     pygame.time.wait(10)
