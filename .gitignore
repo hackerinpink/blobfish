@@ -2,3 +2,5 @@ __pycache__
 /venv/
 /.venv/
 .idea/
+# Datasets or other data files too large for Git tracking
+data
