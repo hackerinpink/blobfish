@@ -2,5 +2,5 @@ __pycache__
 /venv/
 /.venv/
 .idea/
-# Code from Blackboard not yet suitable for addition
-from-bb/
+# Datasets or other data files too large for Git tracking
+data
