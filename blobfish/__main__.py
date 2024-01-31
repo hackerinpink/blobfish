@@ -1,8 +1,7 @@
 import chess
-from . import (
-    player,
-    game
-)
+
+import player
+import game
 
 scoreboard = game.Scoreboard()
 
